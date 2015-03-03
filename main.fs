@@ -1,5 +1,5 @@
 include ansi-term.fs
-BG_BLACK FG_GREEN ATTR_OFF 0 init-color-triple!
+BG_BLACK FG_WHITE ATTR_OFF 0 init-color-triple!
 
 struct
 	cell% field object-x
@@ -34,19 +34,21 @@ create player object% %allot
 \ initialize the player
 20 3 0 char @ player make-object!
 
-: run!  ( -- )
-	10 0 do
+: run!  { game-over -- }
+	begin
 		erase-display!
 		player draw-object!
-		player object-coordinates move-cursor!
-		player object-coordinates
+		player object-coordinates 2dup move-cursor!
 		key case
 			[char] k of 1- endof
 			[char] j of 1+ endof
 			[char] h of swap 1- swap endof
 			[char] l of swap 1+ swap endof
+			[char] q of -1 to game-over endof
 		endcase
 		player move-object!
 		graphics-normal!
-	loop
+	game-over until
 ;
+
+0 run! page bye

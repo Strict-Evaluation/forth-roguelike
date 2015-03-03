@@ -26,6 +26,9 @@ end-struct object%
 	object-x !
 ;
 
+: object-coordinates  ( addr -- x y )
+	dup object-x @ swap object-y @ ;
+
 \ our main player
 create player object% %allot
 \ initialize the player
@@ -35,7 +38,7 @@ create player object% %allot
 	10 0 do
 		erase-display!
 		player draw-object!
-		player dup object-x @ swap object-y @ ( x y )
+		player object-coordinates
 		key case
 			[char] k of 1- endof
 			[char] j of 1+ endof
@@ -43,6 +46,7 @@ create player object% %allot
 			[char] l of swap 1+ swap endof
 		endcase
 		player move-object!
+		player object-coordinates move-cursor!
 		graphics-normal!
 	loop
 ;

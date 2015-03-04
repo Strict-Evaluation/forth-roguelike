@@ -36,16 +36,15 @@ end-struct object%
 : index->object  ( addr n -- addr )
 	objects + ;
 
-: for-objects!  { addr -- ( xt count addr -- ) }
-	0 do
-		addr i index->object
-		over execute
+: for-objects!  { array -- ( xt array -- ) }
+	-1 array execute @ 0 do
+		i array execute ( xt obj )
+		over execute ( xt obj xt -- )
 	loop drop ;
 
 : default-update  ( addr -- )
 	object-y dup @ 1+ dup height < if else drop height then
 	swap ! ;
-
 : init-object!  { addr -- }
 	width randint height randint 0
 	27 randint [char] a +
@@ -53,16 +52,16 @@ end-struct object%
 	addr
 	make-object! ;
 
-: init-objects!  ( count addr -- )
-	['] init-object! -rot for-objects! ;
+: init-objects!  ( addr -- )
+	['] init-object! swap for-objects! ;
 
-: draw-objects!  ( count addr -- )
-	['] draw-object! -rot for-objects! ;
+: draw-objects!  ( addr -- )
+	['] draw-object! swap for-objects! ;
 
-: update-objects!  ( count addr -- )
-	['] update-object! -rot for-objects! ;
+: update-objects!  ( addr -- )
+	['] update-object! swap for-objects! ;
 
 : make-object-array ( length [name] -- )
 	create dup here ! objects cell+ allot
 	does>  ( index -- addr )
-		swap objects cell+ + ;
+		swap 1+ objects + ;
